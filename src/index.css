@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Hind Siliguri", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Amiri", Georgia, Cambria, "Times New Roman", Times, serif;
+  
+  /* Custom colors for Sophisticated Dark theme */
+  --color-soph-deep: #0D0E10;
+  --color-soph-card: #141619;
+  --color-soph-hover: #1C1F24;
+  --color-soph-border: #25282F;
+  --color-soph-gold: #C5A059;
+  --color-soph-gold-muted: #9E8147;
+  --color-soph-gold-light: #DFCDA6;
+  --color-soph-green: #0E2E20;
+  --color-soph-emerald: #164832;
+  --color-soph-text-primary: #E6E8EA;
+  --color-soph-text-secondary: #9AA0A6;
+}
+
+/* Custom utilities for better Arabic RTL and hiding scrollbars */
+.dir-rtl {
+  direction: rtl;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Luxury custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D0E10;
+}
+::-webkit-scrollbar-thumb {
+  background: #25282F;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}

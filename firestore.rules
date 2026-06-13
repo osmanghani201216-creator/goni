@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global safety net: deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid.size() <= 128 &&
+             data.email is string && data.email.size() <= 128 &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 128)) &&
+             data.createdAt is string && data.createdAt.size() <= 128;
+    }
+
+    function isValidSavedVerse(data) {
+      return data.surahId is int &&
+             data.surahName is string && data.surahName.size() <= 128 &&
+             data.verseNumber is int &&
+             data.ar is string && data.ar.size() <= 20000 &&
+             data.bn is string && data.bn.size() <= 20000 &&
+             data.savedAt is string && data.savedAt.size() <= 128;
+    }
+
+    function isValidSavedHadith(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.book is string && data.book.size() <= 256 &&
+             data.ar is string && data.ar.size() <= 20000 &&
+             data.bn is string && data.bn.size() <= 20000 &&
+             (!('narrator' in data) || (data.narrator is string && data.narrator.size() <= 2048)) &&
+             (!('chapter' in data) || (data.chapter is string && data.chapter.size() <= 2048)) &&
+             data.savedAt is string && data.savedAt.size() <= 128;
+    }
+
+    function isValidSettings(data) {
+      return data.dailyReminderEnabled is bool &&
+             data.dailyReminderTime is string && data.dailyReminderTime.size() <= 32 &&
+             (!('prayerNotificationSettings' in data) || (data.prayerNotificationSettings is string && data.prayerNotificationSettings.size() <= 16384)) &&
+             data.updatedAt is string && data.updatedAt.size() <= 128;
+    }
+
+    function isValidRecitedDua(data) {
+      return data.duaId is int &&
+             data.count is int &&
+             data.updatedAt is string && data.updatedAt.size() <= 128;
+    }
+
+    function isValidStudyCircle(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 256 &&
+             (!('description' in data) || (data.description is string && data.description.size() <= 2048)) &&
+             data.hostUid is string && data.hostUid.size() <= 128 &&
+             data.hostName is string && data.hostName.size() <= 128 &&
+             data.meetLink is string && data.meetLink.size() <= 1024 &&
+             data.scheduledTime is string && data.scheduledTime.size() <= 128 &&
+             data.createdAt is string && data.createdAt.size() <= 128;
+    }
+
+    function isValidQuizScore(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.userName is string && data.userName.size() <= 128 &&
+             data.score is int &&
+             data.totalQuestions is int &&
+             data.percentage is int &&
+             data.updatedAt is string && data.updatedAt.size() <= 128;
+    }
+
+    // Rules for Quiz Scores (Leaderboard) collection
+    match /quiz_scores/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId) && isValidId(userId) && isValidQuizScore(incoming()) && incoming().userId == request.auth.uid;
+      allow update: if isOwner(userId) && isValidId(userId) && isValidQuizScore(incoming()) && existing().userId == request.auth.uid && incoming().userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Rules for Study Circles collection
+    match /study_circles/{circleId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(circleId) && isValidStudyCircle(incoming()) && incoming().hostUid == request.auth.uid;
+      allow update: if isSignedIn() && isValidId(circleId) && isValidStudyCircle(incoming()) && existing().hostUid == request.auth.uid && incoming().hostUid == request.auth.uid;
+      allow delete: if isSignedIn() && existing().hostUid == request.auth.uid;
+    }
+
+    // Rules for Users collection and subcollections
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming()) && incoming().uid == request.auth.uid;
+      allow update: if isOwner(userId) && isValidUser(incoming()) && (incoming().uid == existing().uid);
+      allow delete: if false;
+
+      match /saved_verses/{verseId} {
+        allow read, write: if isOwner(userId);
+        allow create: if isValidId(verseId) && isValidSavedVerse(incoming());
+        allow update: if isValidId(verseId) && isValidSavedVerse(incoming());
+      }
+
+      match /saved_hadiths/{hadithId} {
+        allow read, write: if isOwner(userId);
+        allow create: if isValidId(hadithId) && isValidSavedHadith(incoming());
+        allow update: if isValidId(hadithId) && isValidSavedHadith(incoming());
+      }
+
+      match /settings/{prefId} {
+        allow read, write: if isOwner(userId);
+        allow create, update: if isValidId(prefId) && isValidSettings(incoming());
+      }
+
+      match /recited_duas/{duaId} {
+        allow read, write: if isOwner(userId);
+        allow create: if isValidId(duaId) && isValidRecitedDua(incoming());
+        allow update: if isValidId(duaId) && isValidRecitedDua(incoming());
+      }
+    }
+  }
+}

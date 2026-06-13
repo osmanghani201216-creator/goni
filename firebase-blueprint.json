@@ -1,0 +1,128 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Profile details for each authenticated user.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "SavedVerse": {
+      "title": "Saved Verse",
+      "description": "Quran verses bookmarked by the user.",
+      "type": "object",
+      "properties": {
+        "surahId": { "type": "integer" },
+        "surahName": { "type": "string" },
+        "verseNumber": { "type": "integer" },
+        "ar": { "type": "string" },
+        "bn": { "type": "string" },
+        "savedAt": { "type": "string" }
+      },
+      "required": ["surahId", "surahName", "verseNumber", "ar", "bn", "savedAt"]
+    },
+    "SavedHadith": {
+      "title": "Saved Hadith",
+      "description": "Hadiths bookmarked by the user.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "book": { "type": "string" },
+        "ar": { "type": "string" },
+        "bn": { "type": "string" },
+        "narrator": { "type": "string" },
+        "chapter": { "type": "string" },
+        "savedAt": { "type": "string" }
+      },
+      "required": ["id", "book", "ar", "bn", "savedAt"]
+    },
+    "Settings": {
+      "title": "User Settings",
+      "description": "Custom notification preferences, reminder times, and other configurations.",
+      "type": "object",
+      "properties": {
+        "dailyReminderEnabled": { "type": "boolean" },
+        "dailyReminderTime": { "type": "string" },
+        "prayerNotificationSettings": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["dailyReminderEnabled", "dailyReminderTime", "updatedAt"]
+    },
+    "RecitedDua": {
+      "title": "Recited Dua",
+      "description": "Track the count of recitations for a specific dua.",
+      "type": "object",
+      "properties": {
+        "duaId": { "type": "integer" },
+        "count": { "type": "integer" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["duaId", "count", "updatedAt"]
+    },
+    "StudyCircle": {
+      "title": "Study Circle",
+      "description": "An online Quran/Islamic discussion session powered by Google Meet.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "hostUid": { "type": "string" },
+        "hostName": { "type": "string" },
+        "meetLink": { "type": "string" },
+        "scheduledTime": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "hostUid", "hostName", "meetLink", "scheduledTime", "createdAt"]
+    },
+    "QuizScore": {
+      "title": "Quiz Score",
+      "description": "User's highest quiz score for global ranking.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "score": { "type": "integer" },
+        "totalQuestions": { "type": "integer" },
+        "percentage": { "type": "integer" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "userName", "score", "totalQuestions", "percentage", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/quiz_scores/{userId}": {
+      "schema": "QuizScore",
+      "description": "Global leaderboard high score for each user"
+    },
+    "/study_circles/{circleId}": {
+      "schema": "StudyCircle",
+      "description": "Study circle room with Google Meet video link"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Root document for a user's account info"
+    },
+    "/users/{userId}/saved_verses/{verseId}": {
+      "schema": "SavedVerse",
+      "description": "User's bookmarked Quranic verses"
+    },
+    "/users/{userId}/saved_hadiths/{hadithId}": {
+      "schema": "SavedHadith",
+      "description": "User's bookmarked Hadiths"
+    },
+    "/users/{userId}/settings/preferences": {
+      "schema": "Settings",
+      "description": "Preferences doc containing reminder configurations"
+    },
+    "/users/{userId}/recited_duas/{duaId}": {
+      "schema": "RecitedDua",
+      "description": "Recited count for individual duas"
+    }
+  }
+}

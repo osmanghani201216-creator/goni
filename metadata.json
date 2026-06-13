@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: Remix: Remix: Al-Quran \u0026 Tafsir",
+  "description": "১১৪ সূরার আরবী, বাংলা উচ্চারণ, অর্থ ও বিস্তারিত তাফসীর/ব্যাখ্যা সমৃদ্ধ সম্পূর্ণ আল কুরআন অ্যাপ।",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
