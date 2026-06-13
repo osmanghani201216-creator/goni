@@ -43,6 +43,50 @@ export default function App() {
   const [activeSurah, setActiveSurah] = useState<number | null>(null);
   const [meetAccessToken, setMeetAccessToken] = useState<string | null>(null);
 
+  // Hash Routing Synchronizer for GitHub Pages / Static hosting support
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (!hash) return;
+      
+      const cleanHash = hash.replace(/^#\/?/, "");
+      
+      if (cleanHash.startsWith("quran/surah/")) {
+        const surahId = parseInt(cleanHash.replace("quran/surah/", ""));
+        if (!isNaN(surahId)) {
+          setActiveTab("quran");
+          setActiveSurah(surahId);
+        }
+      } else {
+        const tabs = ["quran", "hadith", "quiz", "prayer", "masail", "dua", "admin-panel", "saved", "meetings", "classroom"];
+        if (tabs.includes(cleanHash)) {
+          setActiveTab(cleanHash as any);
+          setActiveSurah(null);
+        }
+      }
+    };
+
+    // Initial check on mount
+    handleHashChange();
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
+  // Update URL hash when tab or surah changes
+  useEffect(() => {
+    let newHash = "";
+    if (activeSurah !== null) {
+      newHash = `#/quran/surah/${activeSurah}`;
+    } else {
+      newHash = `#/${activeTab}`;
+    }
+    
+    if (window.location.hash !== newHash) {
+      window.location.hash = newHash;
+    }
+  }, [activeTab, activeSurah]);
+
   // Firebase Auth State
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);

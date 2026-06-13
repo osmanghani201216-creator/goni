@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Google AI Studio App</title>
     <script>
+      // Extract SPA redirect params from GitHub Pages 404.html and map to Hash Route
+      (function() {
+        var q = window.location.search;
+        if (q && q.slice(0, 3) === '?p=') {
+          var path = decodeURIComponent(q.slice(3).split('&')[0]).replace(/^\/+/, '');
+          window.location.hash = '#/' + path;
+          window.history.replaceState(null, null, window.location.pathname + window.location.hash);
+        }
+      })();
+
       (function() {
         try {
           var originalFetch = window.fetch;

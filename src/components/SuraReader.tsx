@@ -815,6 +815,7 @@ export default function SuraReader({
   const handleLoadedMetadata = () => {
     if (fullAudioRef.current) {
       setAudioDuration(fullAudioRef.current.duration || 0);
+      fullAudioRef.current.playbackRate = playbackRate;
     }
   };
 
@@ -1236,6 +1237,24 @@ export default function SuraReader({
                 title="ভলিউম নিয়ন্ত্রণ"
               />
             </div>
+
+            {/* Playback Speed selector */}
+            <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 bg-soph-deep/40 px-3 py-1.5 rounded-xl border border-soph-border/30">
+              <span className="text-[10px] font-bold text-soph-text-secondary uppercase select-none">গতি:</span>
+              <select
+                value={playbackRate}
+                onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                className="bg-transparent border-none text-soph-gold font-bold text-xs focus:outline-none cursor-pointer pr-1"
+                title="প্লেব্যাক গতি নিয়ন্ত্রণ"
+              >
+                <option value="0.5" className="bg-[#0c0f17] text-white">0.5x</option>
+                <option value="0.75" className="bg-[#0c0f17] text-white">0.75x</option>
+                <option value="1.0" className="bg-[#0c0f17] text-white">1x</option>
+                <option value="1.25" className="bg-[#0c0f17] text-white">1.25x</option>
+                <option value="1.5" className="bg-[#0c0f17] text-white">1.5x</option>
+                <option value="2.0" className="bg-[#0c0f17] text-white">2x</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -1532,25 +1551,19 @@ export default function SuraReader({
 
                 <div className="flex items-center gap-1.5">
                   <span className="text-soph-text-secondary text-[10px] font-bold uppercase whitespace-nowrap">গতি:</span>
-                  <div className="flex bg-soph-deep p-0.5 rounded-lg border border-soph-border">
-                    {[
-                      { val: 0.85, label: "ধীর" },
-                      { val: 1.0, label: "স্বাভাবিক" },
-                      { val: 1.15, label: "দ্রুত" }
-                    ].map((sp) => (
-                      <button
-                        key={sp.val}
-                        onClick={() => setPlaybackRate(sp.val)}
-                        className={`px-2 py-0.5 text-[10px] font-extrabold rounded-md transition duration-150 cursor-pointer ${
-                          playbackRate === sp.val 
-                            ? "bg-soph-gold text-soph-deep" 
-                            : "text-soph-text-secondary hover:text-soph-gold"
-                        }`}
-                      >
-                        {sp.label}
-                      </button>
-                    ))}
-                  </div>
+                  <select
+                    value={playbackRate}
+                    onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                    className="py-1 px-2.5 bg-soph-deep border border-soph-border text-soph-gold font-bold rounded-xl text-xs focus:ring-1 focus:ring-soph-gold focus:outline-none cursor-pointer"
+                    title="প্লেব্যাক গতি নিয়ন্ত্রণ"
+                  >
+                    <option value="0.5" className="bg-[#0c0f17] text-white">0.5x</option>
+                    <option value="0.75" className="bg-[#0c0f17] text-white">0.75x</option>
+                    <option value="1.0" className="bg-[#0c0f17] text-white">1x</option>
+                    <option value="1.25" className="bg-[#0c0f17] text-white">1.25x</option>
+                    <option value="1.5" className="bg-[#0c0f17] text-white">1.5x</option>
+                    <option value="2.0" className="bg-[#0c0f17] text-white">2x</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -2201,24 +2214,21 @@ export default function SuraReader({
                 {/* 3. Right Station: Speed Rate, Volume, minimize & close */}
                 <div className="flex items-center justify-between md:justify-end gap-3 md:min-w-[240px] border-t border-soph-border/40 md:border-t-0 pt-3 md:pt-0">
                   {/* Playback speed selector */}
-                  <div className="flex bg-soph-deep p-0.5 rounded-lg border border-soph-border/60">
-                    {[
-                      { val: 0.85, label: "ধীর" },
-                      { val: 1.0, label: "স্বাভাবিক" },
-                      { val: 1.15, label: "দ্রুত" }
-                    ].map((sp) => (
-                      <button
-                        key={sp.val}
-                        onClick={() => setPlaybackRate(sp.val)}
-                        className={`px-1.5 py-0.5 text-[9px] font-black rounded-md transition duration-155 cursor-pointer ${
-                          playbackRate === sp.val 
-                            ? "bg-soph-gold text-soph-deep font-black" 
-                            : "text-soph-text-secondary hover:text-soph-gold hover:bg-soph-hover"
-                        }`}
-                      >
-                        {sp.label}
-                      </button>
-                    ))}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className="text-soph-text-secondary text-[10px] font-bold uppercase whitespace-nowrap select-none">গতি:</span>
+                    <select
+                      value={playbackRate}
+                      onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                      className="py-1 px-2.5 bg-soph-deep border border-soph-border/60 text-soph-gold font-bold rounded-xl text-xs focus:ring-1 focus:ring-soph-gold focus:outline-none cursor-pointer"
+                      title="প্লেব্যাক গতি নিয়ন্ত্রণ"
+                    >
+                      <option value="0.5" className="bg-[#0c0f17] text-white">0.5x</option>
+                      <option value="0.75" className="bg-[#0c0f17] text-white">0.75x</option>
+                      <option value="1.0" className="bg-[#0c0f17] text-white">1x</option>
+                      <option value="1.25" className="bg-[#0c0f17] text-white">1.25x</option>
+                      <option value="1.5" className="bg-[#0c0f17] text-white">1.5x</option>
+                      <option value="2.0" className="bg-[#0c0f17] text-white">2x</option>
+                    </select>
                   </div>
 
                   {/* Volume Slider */}
